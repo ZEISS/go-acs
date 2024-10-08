@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	endpointURL string = "https://acs-nova-demo.germany.communication.azure.com/"
-	key         string
+	endpointURL string = ""
+	key         string = ""
 )
 
 func main() {
@@ -23,16 +23,15 @@ func main() {
 	acsClient := acs.New(endpointURL, key, &client)
 
 	res, err := acsClient.SMS.SendSMS(ctx, &sms.Request{
-		From: "+1234567890",
+		From: "+18772241979",
 		SMSRecipients: []sms.SMSRecipients{
 			{
-				To: "+4915120756627",
+				To: "+18772241979",
 			},
 		},
-		Message: "Hello, world!",
+		Message: "Thanks for using our service!",
 		SMSSendOptions: sms.SMSSendOptions{
 			EnableDeliveryReport: true,
-			Tag:                  "example",
 		},
 	})
 	if err != nil {
