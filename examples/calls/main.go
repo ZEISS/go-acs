@@ -52,7 +52,7 @@ func main() {
 
 			for _, e := range events {
 				switch e.Type() {
-				case "Microsoft.Communication.CallConnected":
+				case "Microsoft.Communication.RecognizeCompleted":
 					event := &calls.CallConnectedData{}
 					err := e.DataAs(event)
 					if err != nil {
@@ -60,28 +60,67 @@ func main() {
 						continue
 					}
 
-					req := &calls.CallMediaPlayRequest{
-						PlaySources: []calls.PlaySource{
-							{
+					err = acsClient.Call.CallHangUp(ctx, event.CallConnectionID, key)
+					if err != nil {
+						log.Fatalf("Error hanging up call: %v", err)
+					}
+				case "Microsoft.Communication.ParticipantsUpdated":
+					event := &calls.ParticipantsUpdatedData{}
+					err := e.DataAs(event)
+					if err != nil {
+						log.Fatalln(err)
+						continue
+					}
+					fmt.Println(event)
+
+					for _, p := range event.Participants {
+						if p.Identifier.Kind != "communicationUser" {
+							continue
+						}
+
+						req := &calls.CallRecognizeRequest{
+							RecognizeInputType: calls.RecognizeInputTypeChoices,
+							PlayPrompt: calls.PlaySource{
 								Kind: calls.PlaySourceTypeText,
 								TextSource: &calls.TextSource{
-									Text:      "Hello, this is a test message.",
-									VoiceName: "en-US-NancyNeural",
+									Text:      "Hello, the following incident occured: Instance-12345 on Azure is down. Please press 1 to acknowledge or 0 to decline.",
+									VoiceName: "en-US-AriaNeural",
 								},
 							},
-						},
-						PlayOptions: &calls.PlayOptions{
-							Loop: false,
-						},
-						OperationCallbackUri: "",
-					}
+							RecognizeOptions: &calls.RecognizeOptions{
+								InterruptPrompt:                true,
+								InitialSilenceTimeoutInSeconds: 60,
+								Choices: []calls.Choice{
+									{
+										Label:   "Acknowledged",
+										Phrases: []string{"Acknowledge", "Ack", "Yes"},
+										Tone:    calls.ToneOne,
+									},
+									{
+										Label:   "Declined",
+										Phrases: []string{"Decline", "No"},
+										Tone:    calls.ToneZero,
+									},
+								},
+								TargetParticipant: &calls.CommunicationIdentifier{
+									Kind: p.Identifier.Kind,
+									CommunicationUser: &calls.CommunicationUser{
+										ID: p.Identifier.CommunicationUser.ID,
+									},
+								},
+							},
+							OperationCallbackUri: "",
+						}
 
-					fmt.Println(req)
+						fmt.Println(req)
 
-					err = acsClient.Call.CallMediaPlay(ctx, event.CallConnectionID, key, req)
-					if err != nil {
-						panic(err)
+						err = acsClient.Call.CallMediaRecognize(ctx, event.CallConnectionID, key, req)
+						if err != nil {
+							panic(err)
+						}
 					}
+				case "Microsoft.Communication.CallConnected":
+
 				}
 			}
 		})
@@ -97,7 +136,7 @@ func main() {
 
 	req := &calls.CreateCallRequest{
 		SourceCallerIdNumber: &calls.PhonenumberIdentifier{
-			Value: "+18662311561",
+			Value: "",
 		},
 		CallIntelligenceOptions: &calls.CallIntelligenceOptions{
 			CognitiveServicesEndpoint: "",
@@ -106,8 +145,8 @@ func main() {
 			{
 				Kind: "phonenumber",
 				PhoneNumber: &calls.PhonenumberIdentifier{
-					ID:    "+18662311561",
-					Value: "+18662311561",
+					ID:    "",
+					Value: "",
 				},
 			},
 		},

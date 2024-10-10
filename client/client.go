@@ -99,7 +99,7 @@ func (c *Client) Post(ctx context.Context, key string, resource string, query st
 }
 
 // Delete ...
-func (c *Client) Delete(ctx context.Context, resource string, query string, response any) error {
+func (c *Client) Delete(ctx context.Context, key, resource string, query string, response any, opts ...Opt) error {
 	body := []byte("{}")
 	reqBody := struct{}{}
 
@@ -115,7 +115,7 @@ func (c *Client) Delete(ctx context.Context, resource string, query string, resp
 		u.Host,
 		resource+"?"+query,
 		date,
-		c.key,
+		key,
 		body,
 	)
 
