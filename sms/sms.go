@@ -83,10 +83,10 @@ func NewService(c *client.Client) *Service {
 }
 
 // SendSMS sends an SMS message.
-func (s *Service) SendSMS(ctx context.Context, request *Request) (*Response, error) {
+func (s *Service) SendSMS(ctx context.Context, key string, request *Request) (*Response, error) {
 	result := &Response{}
 
-	err := s.c.Post(ctx, "/sms", "api-version=2021-03-07", request, result)
+	err := s.c.Post(ctx, key, "/sms", "api-version=2021-03-07", request, result)
 	if err != nil {
 		return nil, err
 	}
