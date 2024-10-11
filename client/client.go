@@ -317,13 +317,11 @@ func (s *Client) Request(ctx context.Context) (*http.Request, error) {
 			return nil, err
 		}
 	}
-	req, err := http.NewRequest(s.method, reqURL.String(), body)
+	req, err := http.NewRequestWithContext(ctx, s.method, reqURL.String(), body)
 	if err != nil {
 		return nil, err
 	}
 	addHeaders(req, s.header)
-
-	req = req.WithContext(ctx)
 
 	if s.signer != nil {
 		err = s.signer.Sign(req)
@@ -392,7 +390,7 @@ func (s *Client) ReceiveSuccess(ctx context.Context, successV interface{}) (*htt
 // Receive creates a new HTTP request and returns the response. Success
 // responses (2XX) are JSON decoded into the value pointed to by successV and
 // other responses are JSON decoded into the value pointed to by failureV.
-// If the status code of response is 204(no content) or the Content-Lenght is 0,
+// If the status code of response is 204(no content) or the Content-Length is 0,
 // decoding is skipped. Any error creating the request, sending it, or decoding
 // the response is returned.
 // Receive is shorthand for calling Request and Do.
