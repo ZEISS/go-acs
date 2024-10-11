@@ -7,12 +7,13 @@ toolchain go1.23.2
 require (
 	github.com/cloudevents/sdk-go/v2 v2.15.2
 	github.com/go-resty/resty/v2 v2.15.3
-	github.com/google/go-querystring v1.1.0
+	github.com/zeiss/carry v1.0.0
 	github.com/zeiss/pkg v0.1.12
 )
 
 require (
 	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect

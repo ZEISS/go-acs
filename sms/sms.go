@@ -3,7 +3,7 @@ package sms
 import (
 	"context"
 
-	"github.com/zeiss/go-acs/client"
+	"github.com/zeiss/carry"
 )
 
 const DefaultVersion = "2021-03-07"
@@ -74,11 +74,11 @@ type Error struct{}
 
 // Service is the service for the SMS API.
 type Service struct {
-	client *client.Client
+	client *carry.Client
 }
 
 // NewService returns a new SmsService
-func NewService(c *client.Client) *Service {
+func NewService(c *carry.Client) *Service {
 	return &Service{c}
 }
 

@@ -5,16 +5,16 @@ import (
 	"fmt"
 
 	"github.com/go-resty/resty/v2"
-	"github.com/zeiss/go-acs/client"
+	"github.com/zeiss/carry"
 )
 
 // Service is the service for call.
 type Service struct {
-	client *client.Client
+	client *carry.Client
 }
 
 // NewService returns a new CallService
-func NewService(c *client.Client) *Service {
+func NewService(c *carry.Client) *Service {
 	return &Service{c}
 }
 

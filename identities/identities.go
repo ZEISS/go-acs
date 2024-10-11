@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	"github.com/zeiss/go-acs/client"
+	"github.com/zeiss/carry"
 )
 
 // Service is the service for identity.
 type Service struct {
-	client *client.Client
+	client *carry.Client
 }
 
 // CreateIdentityRequestBody is the request body for creating an identity.
@@ -39,7 +39,7 @@ const CommunicationIdentityTokenScopeVoip CommunicationIdentityTokenScope = "voi
 const CommunicationIdentityTokenScopeVoipJoin CommunicationIdentityTokenScope = "voip.join"
 
 // NewService returns a new SmsService
-func NewService(c *client.Client) *Service {
+func NewService(c *carry.Client) *Service {
 	return &Service{c}
 }
 

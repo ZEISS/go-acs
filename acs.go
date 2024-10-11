@@ -3,11 +3,18 @@ package acs
 import (
 	"net/http"
 
+	"github.com/zeiss/carry"
 	"github.com/zeiss/go-acs/calls"
-	"github.com/zeiss/go-acs/client"
 	"github.com/zeiss/go-acs/identities"
 	"github.com/zeiss/go-acs/sms"
 )
+
+// DefaultVersion
+var DefaultVersion = struct {
+	APIVersion string `url:"api-version"`
+}{
+	APIVersion: "2024-06-15-preview",
+}
 
 // Client is the client for the ACS API.
 type Client struct {
@@ -18,11 +25,11 @@ type Client struct {
 
 // New creates a new Client.
 func New(endpointURL, key string, c *http.Client) *Client {
-	base := client.New().
+	base := carry.New().
 		Client(c).
 		Base(endpointURL).
-		QueryStruct(client.DefaultVersion).
-		SignProvider(client.NewHMacSigner(key))
+		QueryStruct(DefaultVersion).
+		SignProvider(carry.NewHMacSigner(key))
 
 	return &Client{
 		SMS:      sms.NewService(base),
