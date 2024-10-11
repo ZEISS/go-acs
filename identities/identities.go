@@ -64,7 +64,7 @@ type CommunicationIdentityAccessTokenResult struct {
 func (s *Service) CreateIdentity(ctx context.Context, key string, body *CreateIdentityRequestBody) (*CommunicationIdentityAccessTokenResult, error) {
 	res := &CommunicationIdentityAccessTokenResult{}
 
-	err := s.client.Post(ctx, key, "/identities", "api-version=2021-03-07", body, res)
+	_, err := s.client.New().Post("/identities").ReceiveSuccess(ctx, res)
 	if err != nil {
 		return nil, err
 	}

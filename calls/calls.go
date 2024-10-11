@@ -2,6 +2,7 @@ package calls
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-resty/resty/v2"
 	"github.com/zeiss/go-acs/client"
@@ -130,14 +131,24 @@ const (
 	TranscriptionTransportTypeWebsocket TranscriptionTransportType = "websocket"
 )
 
-// WithAuthToken sets the auth token.
-func WithAuthToken(token string) Opt {
-	return func(r *resty.Request) {
-		r.SetAuthToken(token)
+// CreateCall creates a call.
+func (s *Service) CreateCall(ctx context.Context, key string, body *CreateCallRequest) error {
+	res, err := s.client.New().Post("/calling/callConnections").BodyJSON(body).ReceiveSuccess(ctx, nil)
+	if err != nil {
+		return err
 	}
+
+	fmt.Println(res)
+
+	return nil
 }
 
-// CreateCall creates a call.
-func (s *Service) CreateCall(ctx context.Context, key string, req *CreateCallRequest, opts ...client.Opt) error {
-	return s.client.Post(ctx, key, "/calling/callConnections", "api-version=2024-06-15-preview", req, nil, opts...)
+// CallHangUp is the method for recognizing call.
+func (s *Service) CallHangUp(ctx context.Context, id string) error {
+	_, err := s.client.New().Delete(fmt.Sprintf("/calling/callConnections/%s", id)).ReceiveSuccess(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -10,14 +10,16 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/zeiss/go-acs/calls"
+	internal "github.com/zeiss/go-acs/events"
+	"github.com/zeiss/pkg/conv"
+
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/zeiss/go-acs"
-	"github.com/zeiss/go-acs/calls"
 )
 
 var (
 	endpointURL string = ""
-	token       string = ""
 	key         string = ""
 )
 
@@ -30,7 +32,7 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	acsClient := acs.New(endpointURL, token, &client)
+	acsClient := acs.New(endpointURL, key, &client)
 
 	go func() {
 		http.HandleFunc("/callback", func(w http.ResponseWriter, r *http.Request) {
@@ -53,25 +55,24 @@ func main() {
 			for _, e := range events {
 				switch e.Type() {
 				case "Microsoft.Communication.RecognizeCompleted":
-					event := &calls.CallConnectedData{}
+					event := &internal.MicrosoftCommunicationCallConnected{}
 					err := e.DataAs(event)
 					if err != nil {
 						log.Fatalln(err)
 						continue
 					}
 
-					err = acsClient.Call.CallHangUp(ctx, event.CallConnectionID, key)
+					err = acsClient.Call.CallHangUp(ctx, event.CallConnectionID)
 					if err != nil {
 						log.Fatalf("Error hanging up call: %v", err)
 					}
 				case "Microsoft.Communication.ParticipantsUpdated":
-					event := &calls.ParticipantsUpdatedData{}
+					event := &internal.MicrosoftCommunicationParticipantsUpdated{}
 					err := e.DataAs(event)
 					if err != nil {
 						log.Fatalln(err)
 						continue
 					}
-					fmt.Println(event)
 
 					for _, p := range event.Participants {
 						if p.Identifier.Kind != "communicationUser" {
@@ -103,7 +104,7 @@ func main() {
 									},
 								},
 								TargetParticipant: &calls.CommunicationIdentifier{
-									Kind: p.Identifier.Kind,
+									Kind: conv.String(p.Identifier.Kind),
 									CommunicationUser: &calls.CommunicationUser{
 										ID: p.Identifier.CommunicationUser.ID,
 									},
@@ -136,7 +137,7 @@ func main() {
 
 	req := &calls.CreateCallRequest{
 		SourceCallerIdNumber: &calls.PhonenumberIdentifier{
-			Value: "",
+			Value: "+",
 		},
 		CallIntelligenceOptions: &calls.CallIntelligenceOptions{
 			CognitiveServicesEndpoint: "",
@@ -145,8 +146,8 @@ func main() {
 			{
 				Kind: "phonenumber",
 				PhoneNumber: &calls.PhonenumberIdentifier{
-					ID:    "",
-					Value: "",
+					ID:    "+",
+					Value: "+",
 				},
 			},
 		},

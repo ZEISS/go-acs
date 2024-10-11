@@ -3,8 +3,6 @@ package calls
 import (
 	"context"
 	"fmt"
-
-	"github.com/zeiss/go-acs/client"
 )
 
 // CallMediaPlayRequest is the body for playing media.
@@ -83,6 +81,11 @@ const (
 )
 
 // CallMediaPlay is the call media play.
-func (s *Service) CallMediaPlay(ctx context.Context, id string, key string, req *CallMediaPlayRequest, opts ...client.Opt) error {
-	return s.client.Post(ctx, key, fmt.Sprintf("/calling/callConnections/%s:play", id), "api-version=2024-06-15-preview", req, nil, opts...)
+func (s *Service) CallMediaPlay(ctx context.Context, id string, key string, body *CallMediaPlayRequest) error {
+	_, err := s.client.New().Post(fmt.Sprintf("/calling/callConnections/%s:play", id)).BodyJSON(body).ReceiveSuccess(ctx, nil)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

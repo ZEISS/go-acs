@@ -74,7 +74,7 @@ type Error struct{}
 
 // Service is the service for the SMS API.
 type Service struct {
-	c *client.Client
+	client *client.Client
 }
 
 // NewService returns a new SmsService
@@ -86,7 +86,7 @@ func NewService(c *client.Client) *Service {
 func (s *Service) SendSMS(ctx context.Context, key string, request *Request) (*Response, error) {
 	result := &Response{}
 
-	err := s.c.Post(ctx, key, "/sms", "api-version=2021-03-07", request, result)
+	_, err := s.client.New().Post("/sms").ReceiveSuccess(ctx, result)
 	if err != nil {
 		return nil, err
 	}

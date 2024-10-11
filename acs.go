@@ -11,7 +11,6 @@ import (
 
 // Client is the client for the ACS API.
 type Client struct {
-	c        *client.Client
 	SMS      *sms.Service
 	Call     *calls.Service
 	Identity *identities.Service
@@ -19,10 +18,13 @@ type Client struct {
 
 // New creates a new Client.
 func New(endpointURL, key string, c *http.Client) *Client {
-	base := client.New(endpointURL, key, c)
+	base := client.New().
+		Client(c).
+		Base(endpointURL).
+		QueryStruct(client.DefaultVersion).
+		SignProvider(client.NewHMacSigner(key))
 
 	return &Client{
-		c:        base,
 		SMS:      sms.NewService(base),
 		Identity: identities.NewService(base),
 		Call:     calls.NewService(base),
