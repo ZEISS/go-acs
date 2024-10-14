@@ -22,7 +22,7 @@ func main() {
 
 	acsClient := acs.New(endpointURL, key, &client)
 
-	res, err := acsClient.SMS.SendSMS(ctx, key, &sms.Request{
+	res, err := acsClient.SMS.SendSMS(ctx, &sms.Request{
 		From: "+1234567890",
 		SMSRecipients: []sms.SMSRecipients{
 			{

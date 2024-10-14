@@ -83,7 +83,7 @@ func NewService(c *carry.Client) *Service {
 }
 
 // SendSMS sends an SMS message.
-func (s *Service) SendSMS(ctx context.Context, key string, request *Request) (*Response, error) {
+func (s *Service) SendSMS(ctx context.Context, request *Request) (*Response, error) {
 	result := &Response{}
 
 	_, err := s.client.New().Post("/sms").ReceiveSuccess(ctx, result)

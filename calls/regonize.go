@@ -115,7 +115,7 @@ type SpeechOptions struct {
 }
 
 // CallMediaRecognize is used to recognize the call.
-func (s *Service) CallMediaRecognize(ctx context.Context, id string, key string, body *CallRecognizeRequest) error {
+func (s *Service) CallMediaRecognize(ctx context.Context, id string, body *CallRecognizeRequest) error {
 	_, err := s.client.New().Post(fmt.Sprintf("/calling/callConnections/%s:recognize", id)).BodyJSON(body).ReceiveSuccess(ctx, nil)
 	if err != nil {
 		return err

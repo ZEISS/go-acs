@@ -132,7 +132,7 @@ const (
 )
 
 // CreateCall creates a call.
-func (s *Service) CreateCall(ctx context.Context, key string, body *CreateCallRequest) error {
+func (s *Service) CreateCall(ctx context.Context, body *CreateCallRequest) error {
 	res, err := s.client.New().Post("/calling/callConnections").BodyJSON(body).ReceiveSuccess(ctx, nil)
 	if err != nil {
 		return err

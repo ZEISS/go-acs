@@ -22,7 +22,7 @@ func main() {
 
 	acsClient := acs.New(endpointURL, key, &client)
 
-	res, err := acsClient.Identity.CreateIdentity(ctx, key, &identities.CreateIdentityRequestBody{
+	res, err := acsClient.Identity.CreateIdentity(ctx, &identities.CreateIdentityRequestBody{
 		CreateTokenWithScopes: []identities.CommunicationIdentityTokenScope{identities.CommunicationIdentityTokenScopeVoip},
 	})
 	if err != nil {

@@ -61,7 +61,7 @@ type CommunicationIdentityAccessTokenResult struct {
 }
 
 // CreateIdentity creates an identity.
-func (s *Service) CreateIdentity(ctx context.Context, key string, body *CreateIdentityRequestBody) (*CommunicationIdentityAccessTokenResult, error) {
+func (s *Service) CreateIdentity(ctx context.Context, body *CreateIdentityRequestBody) (*CommunicationIdentityAccessTokenResult, error) {
 	res := &CommunicationIdentityAccessTokenResult{}
 
 	_, err := s.client.New().Post("/identities").ReceiveSuccess(ctx, res)

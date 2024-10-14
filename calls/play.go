@@ -81,7 +81,7 @@ const (
 )
 
 // CallMediaPlay is the call media play.
-func (s *Service) CallMediaPlay(ctx context.Context, id string, key string, body *CallMediaPlayRequest) error {
+func (s *Service) CallMediaPlay(ctx context.Context, id string, body *CallMediaPlayRequest) error {
 	_, err := s.client.New().Post(fmt.Sprintf("/calling/callConnections/%s:play", id)).BodyJSON(body).ReceiveSuccess(ctx, nil)
 	if err != nil {
 		return err
