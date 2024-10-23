@@ -113,8 +113,6 @@ func main() {
 							OperationCallbackUri: "",
 						}
 
-						fmt.Println(req)
-
 						err = acsClient.Call.CallMediaRecognize(ctx, event.CallConnectionID, req)
 						if err != nil {
 							panic(err)
@@ -154,10 +152,12 @@ func main() {
 		CallbackUri: "",
 	}
 
-	err := acsClient.Call.CreateCall(ctx, req)
+	res, err := acsClient.Call.CreateCall(ctx, req)
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(res)
 
 	<-ctx.Done()
 }

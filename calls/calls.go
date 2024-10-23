@@ -32,7 +32,7 @@ type CreateCallRequest struct {
 	// OperationContext is the operation context.
 	OperationContext string `json:"operationContext,omitempty"`
 	// Source is the source.
-	// Source *CommunicationIdentifier `json:"source"`
+	Source *CommunicationIdentifier `json:"source"`
 	// SourceCallerIdNumber is the source caller id number.
 	SourceCallerIdNumber *PhonenumberIdentifier `json:"sourceCallerIdNumber,omitempty"`
 	// SourceDisplayName is the source display name.
@@ -40,6 +40,108 @@ type CreateCallRequest struct {
 	// Targets is the targets.
 	Targets []CommunicationIdentifier `json:"targets"`
 }
+
+// CallConnectionState is the state for call connection.
+type CallConnectionState string
+
+const (
+	// CallConnectionStateConnected is the connected state.
+	CallConnectionStateConnected CallConnectionState = "connected"
+	// CallConnectionStateConnecting is the connecting state.
+	CallConnectionStateConnecting CallConnectionState = "connecting"
+	// CallConnectionStateDisconnected is the disconnected state.
+	CallConnectionStateDisconnected CallConnectionState = "disconnected"
+	// CallConnectionStateDisconnecting is the disconnecting state.
+	CallConnectionStateDisconnecting CallConnectionState = "disconnecting"
+	// CallConnectionStateTransferAccepted is the transfer accepted state.
+	CallConnectionStateTransferAccepted CallConnectionState = "transferAccepted"
+	// CallConnectionStateTransferring is the transferring state.
+	CallConnectionStateTransferring CallConnectionState = "transferring"
+	// CallConnectionStateUnknown is the unknown state.
+	CallConnectionStateUnknown CallConnectionState = "unknown"
+)
+
+// CreateCallResponse is the response for creating a call.
+type CreateCallResponse struct {
+	// AnsweredBy is the answered by.
+	AnsweredBy CommunicationIdentifier `json:"answeredBy"`
+	// AnsweredFor is the answered for.
+	AnsweredFor PhonenumberIdentifier `json:"answeredFor"`
+	// CallConnectionId is the call connection id.
+	CallConnectionId string `json:"callConnectionId"`
+	// CallConnectionState is the call connection state.
+	CallConnectionState CallConnectionState `json:"callConnectionState"`
+	// CallbackURI is the callback uri.
+	CallbackURI string `json:"callbackUri"`
+	// CorrelationId is the correlation id.
+	CorrelationId string `json:"correlationId"`
+	// MediaStreamingSubscription is the media streaming subscription.
+	MediaStreamingSubscription MediaStreamingSubscription `json:"mediaStreamingSubscription"`
+	// ServerCallId is the server call id.
+	ServerCallId string `json:"serverCallId"`
+	// Source is the source.
+	Source CommunicationIdentifier `json:"source"`
+	// SourceCallerIdNumber is the source caller id number.
+	SourceCallerIdNumber PhonenumberIdentifier `json:"sourceCallerIdNumber"`
+	// SourceDisplayName is the source display name.
+	SourceDisplayName string `json:"sourceDisplayName"`
+	// Targets is the targets.
+	Targets []CommunicationIdentifier `json:"targets"`
+	// TranscriptionSubscription is the transcription subscription.
+	TranscriptionSubscription string `json:"transcriptionSubscription"`
+}
+
+// MediaStreamingSubscription is the media streaming subscription.
+type MediaStreamingSubscription struct {
+	// Id is the id.
+	ID string `json:"id"`
+	// State is the state.
+	State MediaStreamingSubscriptionState `json:"state"`
+	// SubscribedContentTypes is the subscribed content types.
+	SubscribedContentTypes []MediaStreamingContentType `json:"subscribedContentTypes"`
+}
+
+// TranscriptionSubscription is the transcription subscription.
+type TranscriptionSubscription struct {
+	// Id is the id.
+	ID string `json:"id"`
+	// State is the state.
+	State TranscriptionSubscriptionState `json:"state"`
+	// SubscribedResultTypes is the subscribed result types.
+	SubscribedResultTypes []TranscriptionResultType `json:"subscribedResultTypes"`
+}
+
+// TranscriptionSubscriptionState is the state for transcription subscription.
+type TranscriptionSubscriptionState string
+
+const (
+	// TranscriptionSubscriptionStateActive is the active state.
+	TranscriptionSubscriptionStateActive TranscriptionSubscriptionState = "active"
+	// TranscriptionSubscriptionStateDisabled is the disabled state.
+	TranscriptionSubscriptionStateDisabled TranscriptionSubscriptionState = "disabled"
+	// TranscriptionSubscriptionStateInactive is the inactive state.
+	TranscriptionSubscriptionStateInactive TranscriptionSubscriptionState = "inactive"
+)
+
+// TranscriptionResultType is the type for transcription result.
+type TranscriptionResultType struct {
+	// Final is the final result.
+	Final string `json:"final"`
+	// Intermediate is the intermediate result.
+	Intermediate string `json:"intermediate"`
+}
+
+// MediaStreamingSubscriptionState is the state for media streaming subscription.
+type MediaStreamingSubscriptionState string
+
+const (
+	// MediaStreamingSubscriptionStateActive is the active state.
+	MediaStreamingSubscriptionStateActive MediaStreamingSubscriptionState = "active"
+	// MediaStreamingSubscriptionStateInactive is the inactive state.
+	MediaStreamingSubscriptionStateInactive MediaStreamingSubscriptionState = "inactive"
+	// MediaStreamingSubscriptionStateDisabled is the disabled state.
+	MediaStreamingSubscriptionStateDisabled MediaStreamingSubscriptionState = "disabled"
+)
 
 // CommunicationIdentifier is a communication user identifier.
 type CommunicationIdentifier struct {
@@ -132,15 +234,15 @@ const (
 )
 
 // CreateCall creates a call.
-func (s *Service) CreateCall(ctx context.Context, body *CreateCallRequest) error {
-	res, err := s.client.New().Post("/calling/callConnections").BodyJSON(body).ReceiveSuccess(ctx, nil)
+func (s *Service) CreateCall(ctx context.Context, body *CreateCallRequest) (*CreateCallResponse, error) {
+	res := &CreateCallResponse{}
+
+	_, err := s.client.New().Post("/calling/callConnections").BodyJSON(body).ReceiveSuccess(ctx, res)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	fmt.Println(res)
-
-	return nil
+	return res, nil
 }
 
 // CallHangUp is the method for recognizing call.
