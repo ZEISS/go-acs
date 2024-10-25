@@ -10,8 +10,22 @@ import (
 	"strings"
 
 	cloudevents "github.com/cloudevents/sdk-go"
+	"github.com/zeiss/pkg/channels"
+	"github.com/zeiss/pkg/slices"
 	"github.com/zeiss/pkg/utilx"
 )
+
+// FilterFunc is the filter for events.
+func FilterFunc(types ...string) func(cloudevents.Event) bool {
+	return func(e cloudevents.Event) bool {
+		return slices.In(e.Type(), types...)
+	}
+}
+
+// Filter is the filter for events.
+func Filter(input <-chan cloudevents.Event, types ...string) <-chan cloudevents.Event {
+	return channels.Filter(input, FilterFunc(types...))
+}
 
 // EventHandler is the handler for events.
 type EventHandler struct {
@@ -30,6 +44,20 @@ func (h *EventHandler) Events() <-chan cloudevents.Event {
 func WithBufferSize(size int) Opt {
 	return func(h *EventHandler) {
 		h.events = make(chan cloudevents.Event, size)
+	}
+}
+
+// WithEvents sets the events channel.
+func WithEvents(events chan cloudevents.Event) Opt {
+	return func(h *EventHandler) {
+		h.events = events
+	}
+}
+
+// Close closes the events channel.
+func (h *EventHandler) Close() {
+	if h.events != nil {
+		close(h.events)
 	}
 }
 
@@ -61,10 +89,7 @@ func (h *EventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case errors.Is(err, io.ErrUnexpectedEOF):
 			http.Error(w, "Request body contains badly-formed JSON", http.StatusBadRequest)
 
-		// Catch any type errors, like trying to assign a string in the
-		// JSON request body to a int field in our Person struct. We can
-		// interpolate the relevant field name and position into the error
-		// message to make it easier for the client to fix.
+		// Catch any type errors, like trying to assign a string in the payload.
 		case errors.As(err, &unmarshalTypeError):
 			msg := fmt.Sprintf("Request body contains an invalid value for the %q field (at position %d)", unmarshalTypeError.Field, unmarshalTypeError.Offset)
 			http.Error(w, msg, http.StatusBadRequest)
@@ -101,6 +126,8 @@ func (h *EventHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	for _, e := range events {
 		h.events <- e
 	}
+
+	w.WriteHeader(http.StatusAccepted)
 }
 
 // NewEventHandler creates a new event handler.
