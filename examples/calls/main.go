@@ -10,12 +10,12 @@ import (
 	"os"
 	"os/signal"
 
+	"github.com/zeiss/go-acs"
 	"github.com/zeiss/go-acs/calls"
 	internal "github.com/zeiss/go-acs/events"
-	"github.com/zeiss/pkg/conv"
 
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/zeiss/go-acs"
+	"github.com/zeiss/pkg/conv"
 )
 
 var (
