@@ -10,7 +10,7 @@ require (
 	github.com/go-resty/resty/v2 v2.16.1
 	github.com/stretchr/testify v1.10.0
 	github.com/zeiss/carry v1.0.0
-	github.com/zeiss/pkg v0.1.18
+	github.com/zeiss/pkg v0.1.19
 )
 
 require (
