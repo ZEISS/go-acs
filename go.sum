@@ -171,8 +171,8 @@ github.com/valyala/bytebufferpool v1.0.0 h1:GqA5TC/0021Y/b9FG4Oi9Mr3q7XYx6Kllzaw
 github.com/valyala/bytebufferpool v1.0.0/go.mod h1:6bBcMArwyJ5K/AmCkWv1jt77kVWyCJ6HpOuEn7z0Csc=
 github.com/zeiss/carry v1.0.0 h1:tdmz4wSPyYFGrhhp1TzpaDoR7aCdSkwBMluXu7CyQno=
 github.com/zeiss/carry v1.0.0/go.mod h1:28sinlJ0JnPz51PA3GAUezxnZFwlnKlm5JWCdn4ThlI=
-github.com/zeiss/pkg v0.1.18 h1:RaEfv+dIi/MbZUgapia8tIW5ajt/1RFQweQKTiqEL+A=
-github.com/zeiss/pkg v0.1.18/go.mod h1:NuTI7tadUwQPvcIZef9Von50QjLZ5r5tKdWvZlysLqU=
+github.com/zeiss/pkg v0.1.19 h1:xFhTEvpwDwv5vTU4K69QXcbdc1mKF/apSqSMF8r5Xc0=
+github.com/zeiss/pkg v0.1.19/go.mod h1:WCFpyj9/BrA1nWIabZGG8yn86aRy6RUzttD4tyRzJMw=
 go.opencensus.io v0.20.1/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
 go.opencensus.io v0.20.2/go.mod h1:6WKK9ahsWS3RSO+PY9ZHZUfv2irvY6gN279GOPZjmmk=
 go.opencensus.io v0.21.0/go.mod h1:mSImk1erAIZhrmZN+AvHh14ztQfjbGwt4TtuofqLduU=
